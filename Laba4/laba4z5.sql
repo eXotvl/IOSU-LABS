@@ -1,3 +1,5 @@
+--Для каждого Product вывести отклонение от средней StandardCost. 
+--Таблица "Production"."Product".
 SELECT 
     "Name", 
     "StandardCost", 

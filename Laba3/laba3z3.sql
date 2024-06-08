@@ -1,3 +1,7 @@
+--Показать список ID людей (поле BusinessEntityId), в котором
+--указано, работает ли человек в магазине или нет, из таблиц
+--Sales.Store, Person.BusinessEntity, используя RIGHT
+--OUTER JOIN
 SELECT b."BusinessEntityID",
        CASE 
            WHEN s."BusinessEntityID" IS NOT NULL THEN 'Работает'

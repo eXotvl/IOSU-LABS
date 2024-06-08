@@ -1,3 +1,6 @@
+--Показать номера телефонов (PhoneNumber) и поля PersonType,
+--FirstName, LastName из таблиц Person.Person,
+--Person.PersonPhone.
 SELECT "pp"."PhoneNumber",
        "p"."PersonType",
        "p"."FirstName",
