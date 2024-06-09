@@ -1,6 +1,9 @@
-SELECT COALESCE(CAST("BusinessEntityID" AS VARCHAR), 'Total') AS "BusinessEntityID",
-       COALESCE("LastReceiptDate"::TEXT, 'Total') AS "LastReceiptDate",
-       MAX("LastReceiptCost") AS "MaxLastReceiptCost"
+--Изменить запрос п.5 использовать CUBE. Отделить строки, созданные с
+--помощью агрегатных функций от строк из фактической таблицы.
+SELECT "BusinessEntityID",
+       "LastReceiptDate",
+       MAX("LastReceiptCost") AS MaxLastReceiptCost,
+       GROUPING("BusinessEntityID") AS GroupingBusinessEntityID,
+       GROUPING("LastReceiptDate") AS GroupingLastReceiptDate
 FROM "Purchasing"."ProductVendor"
-GROUP BY CUBE("BusinessEntityID", "LastReceiptDate")
-HAVING GROUPING("BusinessEntityID") = 1 OR GROUPING("LastReceiptDate") = 1 OR ("BusinessEntityID" IS NOT NULL AND "LastReceiptDate" IS NOT NULL);
+GROUP BY CUBE ("BusinessEntityID", "LastReceiptDate");

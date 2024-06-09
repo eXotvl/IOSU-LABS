@@ -1,15 +1,18 @@
-SELECT COALESCE(CAST("BusinessEntityID" AS VARCHAR), 'Total') AS "BusinessEntityID",
-       COALESCE("LastReceiptDate"::TEXT, 'Total') AS "LastReceiptDate",
-       MAX("LastReceiptCost") AS "MaxLastReceiptCost"
-FROM (
-    SELECT "BusinessEntityID",
-           "LastReceiptDate",
-           "LastReceiptCost"
-    FROM "Purchasing"."ProductVendor"
-    UNION ALL
-    SELECT NULL::INTEGER AS "BusinessEntityID",
-           NULL::DATE AS "LastReceiptDate",
-           MAX("LastReceiptCost") AS "LastReceiptCost"
-    FROM "Purchasing"."ProductVendor"
-) AS subquery
-GROUP BY GROUPING SETS (("BusinessEntityID", "LastReceiptDate"), ());
+--Изменить запрос п.5 использовать GROUPING SETS. Отделить строки,
+--созданные с помощью агрегатных функций от строк из фактической
+--таблицы.
+SELECT "BusinessEntityID",
+       "LastReceiptDate",
+       MAX("LastReceiptCost") AS MaxLastReceiptCost,
+       CASE
+           WHEN GROUPING("BusinessEntityID") = 1 AND GROUPING("LastReceiptDate") = 1 THEN 'Agregate'
+           WHEN GROUPING("BusinessEntityID") = 1 THEN 'Agregate by BusinessEntityID'
+		   WHEN GROUPING("LastReceiptDate") = 1 THEN 'Agregate by LastReceiptDate'
+		   ELSE 'Stroki'
+       END AS RecordType
+FROM "Purchasing"."ProductVendor"
+GROUP BY GROUPING SETS (
+    ("BusinessEntityID", "LastReceiptDate"),
+    ("BusinessEntityID"),
+    ()
+);
